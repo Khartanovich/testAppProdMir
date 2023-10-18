@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +41,6 @@ import com.example.testprodmir.Constans
 import com.example.testprodmir.R
 import com.example.testprodmir.ui.theme.TestProdMirTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +57,7 @@ fun ScreenAuthoriz2(
     }
     val scope = rememberCoroutineScope()
     val deviceModel = Build.ID
+    val checkSms by viewModel.checkSms.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -139,6 +140,9 @@ fun ScreenAuthoriz2(
                     .fillMaxWidth()
                     .clickable {
                         second = 60
+                        scope.launch {
+                            viewModel.getSms(phoneNumber, null, deviceModel)
+                        }
                     },
                 color = Color.Blue,
                 textAlign = TextAlign.Center
@@ -163,10 +167,11 @@ fun ScreenAuthoriz2(
                         scope.launch {
                             viewModel.checkSms(phoneNumber, textSms, deviceModel)
                         }
-                        viewModel.checkSms.onEach {
-                            if (it != null) {
-                            navController.navigate("${Constans.ROUTE_MAIN}/${it.accessToken}")
-                            }
+//                        if (checkSms != null){
+                            checkSms?.let {
+                                navController.navigate("${Constans.ROUTE_MAIN}/${it.accessToken}")
+//                            }
+
                         }
                     },
                     modifier = Modifier

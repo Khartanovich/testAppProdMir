@@ -31,7 +31,7 @@ import com.example.testprodmir.ui.theme.TestProdMirTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(text: String, viewModel: MyVieModel = hiltViewModel()) {
+fun MainScreen(token: String, viewModel: MyVieModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     val activity = (LocalContext.current as? Activity)
     Column(
@@ -64,7 +64,7 @@ fun MainScreen(text: String, viewModel: MyVieModel = hiltViewModel()) {
                 .height(2.dp)
                 .background(Color.LightGray)
         )
-        Text(text = text)
+        Text(text = token)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center

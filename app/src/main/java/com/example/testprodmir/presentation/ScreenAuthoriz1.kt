@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,6 @@ import androidx.navigation.NavHostController
 import com.example.testprodmir.Constans
 import com.example.testprodmir.R
 import com.example.testprodmir.ui.theme.TestProdMirTheme
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +57,7 @@ fun ScreenAuthoriz1(
     var checkBoxState by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val getSms by viewModel.getSms.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -139,11 +140,10 @@ fun ScreenAuthoriz1(
                         scope.launch {
                             viewModel.getSms(text, null, deviceModel)
                         }
-                        viewModel.getSms.onEach {
-                            if (it != null) {
-                                navController.navigate("${Constans.ROUTE_SECOND}/${text}")
-                            }
+                        if (getSms != null){
+                            navController.navigate("${Constans.ROUTE_SECOND}/${text}")
                         }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
