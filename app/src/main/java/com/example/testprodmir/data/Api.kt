@@ -1,31 +1,34 @@
 package com.example.testprodmir.data
 
 import com.example.testprodmir.model.CheckToken
+import com.example.testprodmir.model.LoginRequest
+import com.example.testprodmir.model.LoginResponse
 import com.example.testprodmir.model.SmsCheck
-import com.example.testprodmir.model.SmsPush
+import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 
 interface Api {
-    @POST("/login")
+    @POST("devmobileapi/login")
     suspend fun authorization(
-        @Query("phone") phone: String,
-        @Query("check") check: String?,
-        @Query("device") device: String,
-    ): SmsPush
+        @Body loginRequest: LoginRequest
+    ): LoginResponse
 
-    @POST("/login")
+    @FormUrlEncoded
+    @POST("devmobileapi/login")
     suspend fun authorizationSms(
-        @Query("phone") phone: String,
-        @Query("check") check: String?,
-        @Query("device") device: String,
+        @Field("phone") phone: String,
+        @Field("check") check: String?,
+        @Field("device") device: String
     ): SmsCheck
 
-    @POST("/validate")
-    suspend fun checkToken(@Query("token") token: String): CheckToken
+    @FormUrlEncoded
+    @POST("devmobileapi/validate")
+    suspend fun checkToken(@Field("token") token: String): CheckToken
 
-    @GET("/logout")
+    @GET("devmobileapi/logout")
     suspend fun logOut()
 }

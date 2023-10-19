@@ -1,6 +1,7 @@
 package com.example.testprodmir.model
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 data class SmsPush(
@@ -17,3 +18,19 @@ data class SmsPush(
     @SerializedName("updatedAt")
     val updatedAt: Long
 )
+
+@Keep
+class LoginResponse(
+    val profile: SmsPush,
+    val token: String = "",
+    val refreshToken: String = ""
+) : BaseResponse()
+
+@Keep
+open class BaseResponse {
+    var status = 0
+    var message = ""
+}
+
+@Keep
+data class LoginRequest(val phone: String, val check: Int?, val device: String?)

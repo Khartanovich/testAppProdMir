@@ -56,8 +56,14 @@ fun ScreenAuthoriz2(
         mutableStateOf(60)
     }
     val scope = rememberCoroutineScope()
-    val deviceModel = Build.ID
+    val deviceModel = Build.MODEL
     val checkSms by viewModel.checkSms.collectAsState()
+    var token by remember {
+        mutableStateOf("")
+    }
+    if (checkSms != null) {
+        token = checkSms?.accessToken.toString()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -88,7 +94,6 @@ fun ScreenAuthoriz2(
                 .height(2.dp)
                 .background(Color.LightGray)
         )
-
         Text(
             text = "Код из СМС:",
             modifier = Modifier.padding(16.dp)
@@ -115,7 +120,6 @@ fun ScreenAuthoriz2(
             Text(text = "Отправили на номер:")
             Spacer(modifier = Modifier.width(4.dp))
             Text(text = phoneNumber)
-
         }
         if (second > 0) {
             Text(
@@ -148,7 +152,6 @@ fun ScreenAuthoriz2(
                 textAlign = TextAlign.Center
             )
         }
-
         if (second > 0) {
             LaunchedEffect(Unit) {
                 while (second > 0) {
@@ -157,7 +160,6 @@ fun ScreenAuthoriz2(
                 }
             }
         }
-
         if (checkSMS && textSms.isNotBlank()) {
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -166,12 +168,6 @@ fun ScreenAuthoriz2(
                     onClick = {
                         scope.launch {
                             viewModel.checkSms(phoneNumber, textSms, deviceModel)
-                        }
-//                        if (checkSms != null){
-                            checkSms?.let {
-                                navController.navigate("${Constans.ROUTE_MAIN}/${it.accessToken}")
-//                            }
-
                         }
                     },
                     modifier = Modifier
@@ -182,10 +178,26 @@ fun ScreenAuthoriz2(
                     Text(text = "Продолжить")
                 }
             }
-
         }
-
-
+    }
+    LaunchedEffect(checkSms) {
+        if (checkSms != null) {
+            if (checkSms?.status == 202) {
+                navController.navigate("${Constans.ROUTE_MAIN}/${checkSms?.accessToken}") {
+                    popUpTo(Constans.ROUTE_FIRST) {
+                        inclusive = false
+                        saveState = true
+                    }
+                }
+            } else {
+                navController.navigate("${Constans.ROUTE_MAIN}/${checkSms?.status}") {
+                    popUpTo(Constans.ROUTE_FIRST) {
+                        inclusive = false
+                        saveState = true
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -82,5 +82,7 @@ dependencies {
     kapt ("com.google.dagger:hilt-compiler:2.44")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
 //    implementation ("com.github.fingerprintjs:fingerprint-android:2.1.0")
 }

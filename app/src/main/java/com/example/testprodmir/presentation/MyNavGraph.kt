@@ -10,8 +10,12 @@ import androidx.navigation.navArgument
 import com.example.testprodmir.Constans
 
 @Composable
-fun MyNavGraph(navController: NavHostController, viewModel: MyVieModel = hiltViewModel()) {
-    NavHost(navController = navController, startDestination = Constans.ROUTE_FIRST) {
+fun MyNavGraph(
+    navController: NavHostController,
+    viewModel: MyVieModel = hiltViewModel(),
+    startDestination: String
+) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Constans.ROUTE_FIRST) {
             ScreenAuthoriz1(navController = navController, viewModel = viewModel)
         }
@@ -36,7 +40,7 @@ fun MyNavGraph(navController: NavHostController, viewModel: MyVieModel = hiltVie
             })
         ) { navBackStackEntry ->
             navBackStackEntry.arguments?.getString(Constans.TOKEN)?.let {
-                MainScreen(token = it, viewModel = viewModel)
+                MainScreen(token = it, viewModel = viewModel, navController = navController)
             }
         }
     }

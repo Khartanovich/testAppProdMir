@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,14 +29,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.testprodmir.R
 import com.example.testprodmir.ui.theme.TestProdMirTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(token: String, viewModel: MyVieModel = hiltViewModel()) {
+fun MainScreen(
+    token: String, viewModel: MyVieModel = hiltViewModel(),
+    navController: NavHostController
+) {
     val scope = rememberCoroutineScope()
     val activity = (LocalContext.current as? Activity)
+    val logOut by viewModel.logOut.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -99,12 +108,18 @@ fun MainScreen(token: String, viewModel: MyVieModel = hiltViewModel()) {
             }
         }
     }
+
+    LaunchedEffect(logOut) {
+        if (logOut) {
+            navController.popBackStack()
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPrev() {
     TestProdMirTheme {
-        MainScreen("some token")
+//        MainScreen("some token")
     }
 }

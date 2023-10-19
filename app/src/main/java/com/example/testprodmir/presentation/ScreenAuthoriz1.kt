@@ -1,7 +1,6 @@
 package com.example.testprodmir.presentation
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,14 +49,14 @@ fun ScreenAuthoriz1(
     viewModel: MyVieModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    val deviceModel = Build.ID
-    Log.d("MyLog", "model $deviceModel")
+    val deviceModel = Build.MODEL
     var text by remember { mutableStateOf("") }
     var checkRule by remember { mutableStateOf(false) }
     var checkBoxState by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val getSms by viewModel.getSms.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -88,7 +87,6 @@ fun ScreenAuthoriz1(
                 .height(2.dp)
                 .background(Color.LightGray)
         )
-
         Text(
             text = "Введите номер телефона:",
             modifier = Modifier.padding(16.dp)
@@ -140,10 +138,12 @@ fun ScreenAuthoriz1(
                         scope.launch {
                             viewModel.getSms(text, null, deviceModel)
                         }
-                        if (getSms != null){
-                            navController.navigate("${Constans.ROUTE_SECOND}/${text}")
+                        navController.navigate("${Constans.ROUTE_SECOND}/{$text}") {
+                            popUpTo(Constans.ROUTE_SECOND) {
+                                inclusive = false
+                                saveState = true
+                            }
                         }
-
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -153,7 +153,6 @@ fun ScreenAuthoriz1(
                     Text(text = "Продолжить")
                 }
             }
-
         }
     }
 }
