@@ -1,6 +1,7 @@
 package com.example.testprodmir.presentation
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,6 +51,7 @@ fun ScreenAuthoriz1(
     navController: NavHostController
 ) {
     val deviceModel = Build.MODEL
+    Log.d("MyLog", deviceModel)
     var text by remember { mutableStateOf("") }
     var checkRule by remember { mutableStateOf(false) }
     var checkBoxState by remember { mutableStateOf(false) }
