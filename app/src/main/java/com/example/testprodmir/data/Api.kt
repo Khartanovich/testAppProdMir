@@ -17,12 +17,10 @@ interface Api {
         @Body loginRequest: LoginRequest
     ): LoginResponse
 
-    @FormUrlEncoded
     @POST("devmobileapi/login")
+    @JvmSuppressWildcards
     suspend fun authorizationSms(
-        @Field("phone") phone: String,
-        @Field("check") check: String?,
-        @Field("device") device: String
+    @Body loginRequest: LoginRequest
     ): SmsCheck
 
     @FormUrlEncoded

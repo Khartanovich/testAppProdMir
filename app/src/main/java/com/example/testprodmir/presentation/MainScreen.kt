@@ -1,6 +1,7 @@
 package com.example.testprodmir.presentation
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,12 +37,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-    token: String, viewModel: MyVieModel = hiltViewModel(),
+    viewModel: MyVieModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val activity = (LocalContext.current as? Activity)
     val logOut by viewModel.logOut.collectAsState()
+
+    val showToken = viewModel.showToken()
 
     Column(
         modifier = Modifier
@@ -73,7 +77,7 @@ fun MainScreen(
                 .height(2.dp)
                 .background(Color.LightGray)
         )
-        Text(text = token)
+        Text(text = showToken.toString())
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -110,9 +114,19 @@ fun MainScreen(
     }
 
     LaunchedEffect(logOut) {
-        if (logOut) {
-            navController.popBackStack()
+        when(logOut){
+            LogOutState.Success -> {
+                navController.popBackStack()
+            }
+            is LogOutState.Failure -> {
+                Toast.makeText(
+                    context,
+                    (logOut as LogOutState.Failure).message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
+
     }
 }
 

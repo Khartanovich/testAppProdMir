@@ -33,15 +33,9 @@ fun MyNavGraph(
                 )
             }
         }
-        composable(
-            "${Constans.ROUTE_MAIN}/{${Constans.TOKEN}}",
-            arguments = listOf(navArgument(Constans.TOKEN) {
-                type = NavType.StringType
-            })
-        ) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getString(Constans.TOKEN)?.let {
-                MainScreen(token = it, viewModel = viewModel, navController = navController)
-            }
+        composable(Constans.ROUTE_MAIN){
+            MainScreen(navController = navController, viewModel = viewModel)
         }
+            
     }
 }

@@ -22,7 +22,7 @@ data class SmsPush(
 @Keep
 class LoginResponse(
     val profile: SmsPush,
-    val token: String = "",
+    val token: SmsCheck,
     val refreshToken: String = ""
 ) : BaseResponse()
 

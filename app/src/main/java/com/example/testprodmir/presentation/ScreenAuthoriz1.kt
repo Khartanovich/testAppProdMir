@@ -20,7 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +56,6 @@ fun ScreenAuthoriz1(
     var checkBoxState by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val getSms by viewModel.getSms.collectAsState()
 
     Column(
         modifier = Modifier
@@ -111,7 +109,7 @@ fun ScreenAuthoriz1(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(checked = checkBoxState, onCheckedChange = {
-                if (checkRule == false) {
+                if (!checkRule) {
                     Toast.makeText(
                         context,
                         "Ознакомтесь с правилами обработки данных",
@@ -131,7 +129,7 @@ fun ScreenAuthoriz1(
                     })
             }
         }
-        if (checkBoxState == true) {
+        if (checkBoxState) {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {

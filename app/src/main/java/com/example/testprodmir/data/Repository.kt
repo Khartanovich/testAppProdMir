@@ -22,8 +22,19 @@ class Repository @Inject constructor(private val api: Api) {
         )
     }
 
-    suspend fun checkSms(phone: String, check: String?, device: String): SmsCheck {
-        return api.authorizationSms(phone, check, device)
+    suspend fun checkSms(phone: String, check: Int?, device: String): SmsCheck {
+        var _phone = phone.trimStart('+')
+        if (_phone.length > 9) {
+            _phone = _phone.takeLast(9)
+        }
+        return api.authorizationSms(
+            LoginRequest(
+                phone = _phone,
+                check = check,
+                device = device
+            )
+        )
+
     }
 
     suspend fun checkToken(token: String): CheckToken {

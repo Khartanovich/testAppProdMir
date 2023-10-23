@@ -1,6 +1,7 @@
 package com.example.testprodmir.presentation
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ fun ScreenAuthoriz2(
     viewModel: MyVieModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val okPhoneNamber = phoneNumber.substring(0, phoneNumber.length-1).substring(1)
     var textSms by remember { mutableStateOf("") }
     var checkSMS by remember { mutableStateOf(false) }
     var second by remember {
@@ -58,12 +60,12 @@ fun ScreenAuthoriz2(
     val scope = rememberCoroutineScope()
     val deviceModel = Build.MODEL
     val checkSms by viewModel.checkSms.collectAsState()
-    var token by remember {
-        mutableStateOf("")
-    }
-    if (checkSms != null) {
-        token = checkSms?.accessToken.toString()
-    }
+//    var token by remember {
+//        mutableStateOf("")
+//    }
+//    if (checkSms != null) {
+//        token = checkSms?.token.toString()
+//    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -119,7 +121,7 @@ fun ScreenAuthoriz2(
         ) {
             Text(text = "Отправили на номер:")
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = phoneNumber)
+            Text(text = okPhoneNamber)
         }
         if (second > 0) {
             Text(
@@ -145,7 +147,7 @@ fun ScreenAuthoriz2(
                     .clickable {
                         second = 60
                         scope.launch {
-                            viewModel.getSms(phoneNumber, null, deviceModel)
+                            viewModel.getSms(okPhoneNamber, null, deviceModel)
                         }
                     },
                 color = Color.Blue,
@@ -167,7 +169,7 @@ fun ScreenAuthoriz2(
                 Button(
                     onClick = {
                         scope.launch {
-                            viewModel.checkSms(phoneNumber, textSms, deviceModel)
+                            viewModel.checkSms(okPhoneNamber, textSms.toInt(), deviceModel)
                         }
                     },
                     modifier = Modifier
@@ -181,22 +183,26 @@ fun ScreenAuthoriz2(
         }
     }
     LaunchedEffect(checkSms) {
+        Log.d("MyLog", "checkSms != null in csope")
         if (checkSms != null) {
-            if (checkSms?.status == 202) {
-                navController.navigate("${Constans.ROUTE_MAIN}/${checkSms?.accessToken}") {
-                    popUpTo(Constans.ROUTE_FIRST) {
-                        inclusive = false
-                        saveState = true
-                    }
-                }
-            } else {
-                navController.navigate("${Constans.ROUTE_MAIN}/${checkSms?.status}") {
+            Log.d("MyLog", "checkSms != null after if")
+            if (checkSms?.status == 202 ) {
+                Log.d("MyLog", "checkSms?.status == 202")
+                navController.navigate(Constans.ROUTE_MAIN) {
                     popUpTo(Constans.ROUTE_FIRST) {
                         inclusive = false
                         saveState = true
                     }
                 }
             }
+//            else {
+//                navController.navigate("${Constans.ROUTE_MAIN}/${checkSms?.status}") {
+//                    popUpTo(Constans.ROUTE_FIRST) {
+//                        inclusive = false
+//                        saveState = true
+//                    }
+//                }
+//            }
         }
     }
 }

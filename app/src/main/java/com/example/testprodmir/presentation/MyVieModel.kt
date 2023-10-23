@@ -29,7 +29,7 @@ class MyVieModel @Inject constructor(
     private var _checkToken = MutableStateFlow(false)
     val checkToken = _checkToken.asStateFlow()
 
-    private var _logOut = MutableStateFlow(false)
+    private var _logOut = MutableStateFlow<LogOutState>(LogOutState.Failure(""))
     val logOut = _logOut.asStateFlow()
 
     val token = tokenRepository.getToken()
@@ -53,12 +53,13 @@ class MyVieModel @Inject constructor(
         )
     }
 
-    suspend fun checkSms(phone: String, check: String?, device: String) {
+    suspend fun checkSms(phone: String, check: Int?, device: String) {
         kotlin.runCatching {
             repository.checkSms(phone, check, device)
         }.fold(
             onSuccess = {
-                tokenRepository.saveToken(it.accessToken)
+                Log.d("MyLog", "status in vm ${it.status}")
+                tokenRepository.saveToken(it.token)
                 _checkSms.value = it
             },
             onFailure = {
@@ -87,11 +88,21 @@ class MyVieModel @Inject constructor(
             repository.logOut()
         }.fold(
             onSuccess = {
-                _logOut.value = true
+                _logOut.value = LogOutState.Success
             },
             onFailure = {
                 it.message?.let { it1 -> Log.d("MyLog", it1) }
+                _logOut.value= LogOutState.Failure(it.message.toString())
             }
         )
     }
+
+    fun showToken(): String?{
+        return tokenRepository.getToken()
+    }
+}
+
+sealed class LogOutState(){
+    object Success: LogOutState()
+    data class Failure(val message: String): LogOutState()
 }
