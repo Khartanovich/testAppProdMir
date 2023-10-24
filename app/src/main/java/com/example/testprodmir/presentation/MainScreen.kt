@@ -44,7 +44,6 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val activity = (LocalContext.current as? Activity)
     val logOut by viewModel.logOut.collectAsState()
-
     val showToken = viewModel.showToken()
 
     Column(
@@ -126,7 +125,6 @@ fun MainScreen(
                 ).show()
             }
         }
-
     }
 }
 

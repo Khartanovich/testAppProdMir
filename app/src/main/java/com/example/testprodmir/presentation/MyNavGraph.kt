@@ -36,6 +36,5 @@ fun MyNavGraph(
         composable(Constans.ROUTE_MAIN){
             MainScreen(navController = navController, viewModel = viewModel)
         }
-            
     }
 }
